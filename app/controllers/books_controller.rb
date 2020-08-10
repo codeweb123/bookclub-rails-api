@@ -8,18 +8,28 @@ class BooksController < ApplicationController
     
     def create
         @book = Book.create(book_params)
-        render json: @before do
+        render json: @book
     end
 
     def show 
         render json: @book
     end
 
+    def update
+        @book.update(book_params)
+        if @book.save
+            render json: @book
+        else
+            render json: {errors: @book.errors.full_messages }
+        end
+    end
+    
     def destroy
         @book.destroy
+        render json: {bookId: @book.id}
     end
 
-private
+    private
 
     def book_params
         params.require(:book).permit(:title, :author, :image)
